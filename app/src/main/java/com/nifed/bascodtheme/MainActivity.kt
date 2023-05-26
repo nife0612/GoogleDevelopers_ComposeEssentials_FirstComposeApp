@@ -3,10 +3,11 @@ package com.nifed.bascodtheme
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -14,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,11 +34,34 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MyApp(
-    modifier: Modifier = Modifier,
-    names: List<String> = listOf("Android", "Compose", "Me")
-    ) {
-    Column(modifier = modifier.padding(vertical = 8.dp)) {
+fun MyApp(modifier: Modifier = Modifier) {
+    var showOnboardScreen = remember {
+        mutableStateOf(true)
+    }
+
+    Surface(modifier = modifier) {
+
+        if (showOnboardScreen.value)
+            OnboardingScreen(onContinueClicked = {showOnboardScreen.value = false})
+        else
+            Greetings()
+
+    }
+}
+
+@Composable
+fun OnboardingScreen(onContinueClicked : () -> Unit, modifier: Modifier = Modifier){
+    Column(modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(text = "Welcome to the Basics Codelab!")
+        ElevatedButton(onClick = onContinueClicked, modifier.padding(20.dp)) {
+            Text(text = "Continue")
+        }
+    }
+}
+
+@Composable
+fun Greetings(modifier: Modifier = Modifier, names : List<String> = listOf("Android", "Compose", "Me")){
+    Column(modifier = modifier.padding(vertical = 8.dp).fillMaxSize(),  verticalArrangement = Arrangement.Center) {
         for (name in names){
             Greeting(name = name)
         }
@@ -68,18 +93,28 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     }
 }
 
-@Preview
-@Composable
-fun ItemPreview(){
-    BasCodThemeTheme {
-        Greeting(name = "PlaceHolder")
-    }
-}
 
-@Preview(showBackground = true, name = "My text preview", widthDp = 320)
+
+@Preview(showBackground = true, name = "My text preview")
 @Composable
 fun MyAppPreview() {
     BasCodThemeTheme {
         MyApp()
+    }
+}
+
+@Preview(showBackground = true, heightDp = 120)
+@Composable
+fun OnBoardingPreview(){
+    BasCodThemeTheme {
+        OnboardingScreen(onContinueClicked = {})
+    }
+}
+
+@Preview(heightDp = 320)
+@Composable
+fun ItemsPreview(){
+    BasCodThemeTheme {
+        Greetings()
     }
 }

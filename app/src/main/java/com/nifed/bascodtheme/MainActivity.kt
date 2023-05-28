@@ -1,5 +1,6 @@
 package com.nifed.bascodtheme
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -120,6 +121,7 @@ fun MyAppPreview() {
 }
 
 @Preview(showBackground = true, heightDp = 120)
+@Preview(uiMode = UI_MODE_NIGHT_YES, showBackground = true, heightDp = 120)
 @Composable
 fun OnBoardingPreview(){
     BasCodThemeTheme {
@@ -127,10 +129,12 @@ fun OnBoardingPreview(){
     }
 }
 
-@Preview(heightDp = 320)
+@Preview(heightDp = 320, showBackground = true)
+@Preview(uiMode = UI_MODE_NIGHT_YES, heightDp = 320, showBackground = true)
 @Composable
 fun ItemsPreview(){
     BasCodThemeTheme {
         Greetings()
     }
 }
+

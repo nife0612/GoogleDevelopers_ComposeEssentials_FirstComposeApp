@@ -4,6 +4,9 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,16 +14,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nifed.bascodtheme.ui.theme.BasCodThemeTheme
@@ -87,29 +98,56 @@ fun Greetings(
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
-    val expanded = remember{ mutableStateOf(false)}
-    val extraPadding = if (expanded.value) 45.dp else 0.dp
-
-    Surface(color = MaterialTheme.colorScheme.primary,
-    modifier = modifier.padding(5.dp)) {
-        Row(modifier = Modifier.padding(14.dp)) {
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(bottom = extraPadding)
-            ) {
-                Text(text = "Hello, ")
-                Text(text = name)
-            }
-
-            ElevatedButton(onClick = { expanded.value = !expanded.value }){
-                Text(text = if(expanded.value) "Show less" else "Show more")
-            }
-        }
-
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primary
+        ),
+        modifier = modifier.padding(5.dp)
+    ){
+        CardContent(name)
     }
 }
 
+@Composable
+fun CardContent(name: String){
+    val expanded = rememberSaveable { mutableStateOf(false)}
+
+    Row(
+        modifier = Modifier
+            .padding(14.dp)
+            .animateContentSize(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessLow
+                )
+            )
+    ) {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+
+        ) {
+            Text(text = "Hello, ")
+            Text(text = name, style= MaterialTheme.typography.headlineMedium.copy(
+                fontWeight = FontWeight.ExtraBold
+            ))
+            if(expanded.value){
+                Text(
+                    text = ("Text that repeats. ").repeat(12)
+                )
+            }
+        }
+
+        IconButton(onClick = { expanded.value = !expanded.value }){
+            val expandedIcon = if(expanded.value) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore
+            val expandedDescription = stringResource(id = if(expanded.value) R.string.expand_less else R.string.expand_more)
+            Icon(
+                expandedIcon,
+                contentDescription = expandedDescription
+            )
+        }
+    }
+}
 
 
 @Preview(showBackground = true, name = "My text preview")

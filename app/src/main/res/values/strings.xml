@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">BasCodTheme</string>
+    <string name="expand_more">Expand more</string>
+    <string name="expand_less">Expand less</string>
 </resources>
